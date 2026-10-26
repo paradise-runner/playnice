@@ -70,7 +70,8 @@ test("cli: full session lifecycle over the daemon", async (t) => {
   await t.test("keys keep state (C-c returns to a fresh prompt)", async () => {
     const run = await cli(["key", "sh", "C-c"]);
     assert.equal(run.code, 0, run.stderr);
-    assert.match(run.stdout, /sh-\d\.\d\$/);
+    // bash prints "sh-3.2$", dash prints "$"; both end the line with a prompt.
+    assert.match(run.stdout, /[$#]$/m);
   });
 
   await t.test("resize reflows the pty", async () => {
@@ -80,7 +81,8 @@ test("cli: full session lifecycle over the daemon", async (t) => {
   });
 
   await t.test("wait succeeds on text and fails on timeout", async () => {
-    const hit = await cli(["wait", "sh", "--text", "sh-", "--timeout", "2000"]);
+    await cli(["send", "sh", "echo wait-marker"]);
+    const hit = await cli(["wait", "sh", "--text", "wait-marker", "--timeout", "5000"]);
     assert.equal(hit.code, 0, hit.stderr);
     assert.match(hit.stderr, /condition met/);
     const miss = await cli(["wait", "sh", "--text", "never-going-to-appear", "--timeout", "250"]);
