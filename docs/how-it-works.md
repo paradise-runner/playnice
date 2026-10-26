@@ -126,6 +126,12 @@ await session.close();
 
 `Session` exposes `send`, `type`, `paste`, `press`, `click`, `drag`, `wheel`, `resize`, `snapshot`, `screenshot`, `settle`, `wait`, `close` and `summary`. `Screen` can also replay a recorded byte stream if you have one.
 
+## The Linux tail caveat
+
+`node-pty` reads the pty through a Node `tty.ReadStream`. On Linux that stream can emit `end` while the kernel still holds unread bytes of a final burst, so a command that writes thousands of lines and exits immediately can lose its last lines. It is reproducible with `for i in $(seq 1 3000); do echo line-$i; done` (3-4 of 6 runs in a container) and not with a long-running producer, where the child stays alive until its output has been read. macOS is unaffected, and `node-pty` 1.2.0-beta behaves the same.
+
+The durable fix is to own the read side: keep a duplicate of the master fd, read it ourselves after `node-pty` reports EOF, and drain until `EIO`. That is deferred to 0.2.0 because it changes the core data path for every session and needs revalidation against full-screen apps, exits and backpressure. Until then the burst test is skipped on Linux.
+
 ## Deliberate gaps
 
 The emulator is xterm's, so playnice inherits both its coverage and its limits: no inline image protocols, no clipboard reads, no kitty keyboard protocol. Settling is a quiet-period heuristic, not a protocol-level "frame rendered" signal. Mouse support is SGR 1006 only. The full list, with workarounds, is in the README's [Limits](../README.md#limits-v01) section.
