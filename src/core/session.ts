@@ -161,6 +161,15 @@ export class Session extends EventEmitter<SessionEvents> {
 
     this.pty.onExit(({ exitCode, signal }) => {
       this.exited = true;
+      // A paused pty can still hold the last chunk of output; read it.
+      if (this.paused) {
+        this.paused = false;
+        try {
+          this.pty.resume();
+        } catch {
+          /* the stream is already gone */
+        }
+      }
       this.exitState.exitCode = exitCode;
       this.exitState.signal = signal ?? null;
       this.lastOutputAt = Date.now();
@@ -518,6 +527,7 @@ export class Session extends EventEmitter<SessionEvents> {
     const regex = spec.regex ? new RegExp(spec.regex) : undefined;
     const quietMs = spec.quietMs;
 
+    let exitSeenAt = 0;
     for (;;) {
       const snapshot = await this.peek();
       const haystack = snapshot.lines.join("\n");
@@ -534,7 +544,12 @@ export class Session extends EventEmitter<SessionEvents> {
         return { met: true, waitedMs: elapsed, snapshot };
       }
       if (this.exited && !spec.exit) {
-        return { met: checks.length === 0, waitedMs: elapsed, reason: "exited", snapshot };
+        // Output can still be arriving as the process exits; only conclude
+        // once the tail has had a chance to land.
+        exitSeenAt ||= Date.now();
+        if (Date.now() - exitSeenAt > 750) {
+          return { met: checks.length === 0, waitedMs: elapsed, reason: "exited", snapshot };
+        }
       }
       if (elapsed >= timeout) {
         return { met: false, waitedMs: elapsed, reason: "timeout", snapshot };

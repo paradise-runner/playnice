@@ -196,6 +196,23 @@ test("writing to an exited session fails with a clear message", async () => {
   await session.close();
 });
 
+test("wait still finds text printed immediately before exit", async () => {
+  const session = await Session.open({
+    id: "tail",
+    command: "/bin/sh",
+    args: ["-c", "echo first-line; echo final-line"],
+    cols: 40,
+    rows: 8,
+  });
+  try {
+    const result = await session.wait({ text: "final-line", timeoutMs: 5000 });
+    assert.equal(result.met, true, "text printed just before exit must be findable");
+    assert.equal(result.snapshot.exited, true);
+  } finally {
+    await session.close();
+  }
+});
+
 test("large output does not deadlock or lose the tail", async () => {
   const session = await Session.open({
     id: "big",
