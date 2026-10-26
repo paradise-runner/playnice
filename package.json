@@ -22,6 +22,7 @@
   "files": [
     "bin/",
     "dist/",
+    "!dist/test/",
     "docs/",
     "README.md",
     "LICENSE"
@@ -53,5 +54,16 @@
     "mcp",
     "testing",
     "screenshot"
-  ]
+  ],
+  "allowScripts": {
+    "node-pty@1.1.0": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paradise-runner/playnice.git"
+  },
+  "homepage": "https://github.com/paradise-runner/playnice#readme",
+  "bugs": {
+    "url": "https://github.com/paradise-runner/playnice/issues"
+  }
 }
