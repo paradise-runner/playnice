@@ -175,7 +175,7 @@ export class Session extends EventEmitter<SessionEvents> {
     // program (docker, node with imports, ssh) is silent for a while, and
     // acting on a blank screen is the classic flaky-TUI-test failure.
     await session.waitForFirstOutput(2500);
-    const settle = await session.settle({ quietMs: 120, timeoutMs: 3000 });
+    const settle = await session.settle({ quietMs: 200, timeoutMs: 5000 });
     session.knownSettled = settle.settled;
     session.knownSettledAt = Date.now();
     return session;

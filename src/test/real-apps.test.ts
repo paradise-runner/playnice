@@ -28,10 +28,11 @@ test("drives real vim: insert, save, quit, file on disk is correct", { skip: !VI
     rows: 20,
   });
   try {
-    const first = await session.snapshot();
-    assert.equal(first.altScreen, true);
-    // An empty buffer is a column of tildes.
-    assert.ok(first.lines.some((line) => line.trim() === "~"), "expected vim's empty-buffer tildes");
+    // Wait for painted content rather than trusting startup timing: on a busy
+    // CI runner vim can emit a byte, pause, and paint much later.
+    const painted = await session.wait({ text: "~", timeoutMs: 20_000 });
+    assert.equal(painted.met, true, "vim should paint its empty buffer");
+    assert.equal(painted.snapshot.altScreen, true);
 
     await session.press(["i"]);
     const typed = await session.type("hello from playnice");
@@ -64,9 +65,10 @@ test("drives a pager: less opens, scrolls and quits", { skip: !has("less") && "l
     rows: 12,
   });
   try {
-    const first = await session.snapshot();
-    assert.equal(first.altScreen, true);
-    assert.match(first.text, /localhost|nameserver|#/);
+    const painted = await session.wait({ text: "localhost", timeoutMs: 20_000 });
+    assert.equal(painted.met, true, "less should show /etc/hosts");
+    assert.equal(painted.snapshot.altScreen, true);
+    assert.match(painted.snapshot.text, /localhost|nameserver|#/);
     await session.press(["Space"]);
     await session.press(["q"]);
     const done = await session.wait({ exit: true, timeoutMs: 5000 });

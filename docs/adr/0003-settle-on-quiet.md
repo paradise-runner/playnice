@@ -1,6 +1,6 @@
 # 0003 — Actions settle on quiet, and a timeout is data
 
-Every action (`send`, `key`, `click`, `paste`, `resize`) returns after the terminal has been quiet for a short period (75ms, 120ms on `open`), so callers never sleep and re-screenshot by hand. Quiet means no output **and** no input we just sent: measuring silence from output alone would return a snapshot one instruction after a keystroke, before the app reacted, which is the classic source of flaky TUI automation.
+Every action (`send`, `key`, `click`, `paste`, `resize`) returns after the terminal has been quiet for a short period (75ms, 200ms on `open`), so callers never sleep and re-screenshot by hand. Quiet means no output **and** no input we just sent: measuring silence from output alone would return a snapshot one instruction after a keystroke, before the app reacted, which is the classic source of flaky TUI automation.
 
 The alternative — throwing on timeout, as Playwright does for actionability — was rejected for terminal apps. A spinner, a clock or a log tail never goes quiet, yet the frame is still worth showing; an agent can decide, where an exception would only abort the step.
 
