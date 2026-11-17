@@ -56,6 +56,7 @@ Tests that need real programs (`vim`, `less`) skip themselves when the binary is
 | `docs/snapshot-format.md` | The screenshot grammar and every deliberate loss |
 | `docs/how-it-works.md` | Daemon lifecycle, session internals, settling, input encoding, PNG rendering |
 | `docs/using-mcp.md` | Agent-facing setup and the loop that works |
+| `docs/limits.md` | Every known limitation, with the workaround |
 | `docs/adr/` | One decision per file, with consequences |
 | `AGENTS.md` | Short instructions for an agent using playnice as a tool |
 

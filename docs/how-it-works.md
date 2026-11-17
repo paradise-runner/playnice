@@ -134,4 +134,4 @@ The durable fix is to own the read side: keep a duplicate of the master fd, read
 
 ## Deliberate gaps
 
-The emulator is xterm's, so playnice inherits both its coverage and its limits: no inline image protocols, no clipboard reads, no kitty keyboard protocol. Settling is a quiet-period heuristic, not a protocol-level "frame rendered" signal. Mouse support is SGR 1006 only. The full list, with workarounds, is in the README's [Limits](../README.md#limits-v01) section.
+The emulator is xterm's, so playnice inherits both its coverage and its limits: no inline image protocols, no clipboard reads, no kitty keyboard protocol. Settling is a quiet-period heuristic, not a protocol-level "frame rendered" signal. Mouse support is SGR 1006 only. The full list is in [limits.md](limits.md).
