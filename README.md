@@ -19,15 +19,11 @@ Every action returns the **settled screen**, so there is no sleeping and no re-s
 ## Install
 
 ```sh
-npm i -g playnice
-```
-
-From source:
-
-```sh
 git clone https://github.com/paradise-runner/playnice && cd playnice
 npm install && npm run build && npm link
 ```
+
+Not on npm yet — install from source. `npm link` puts `playnice` on your PATH.
 
 If spawning fails with `posix_spawnp failed`, npm blocked `node-pty`'s install script:
 
