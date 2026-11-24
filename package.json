@@ -1,9 +1,9 @@
 {
   "name": "playnice",
-  "version": "0.1.0",
-  "description": "Playwright for terminals \u2014 drive CLI/TUI apps and capture screenshots an agent can read.",
+  "version": "0.1.1",
+  "description": "Playwright for terminals — drive CLI/TUI apps and capture screenshots an agent can read.",
   "license": "MIT",
-  "author": "Federico Jaramillo Martinez",
+  "author": "Edward Champion <henry.e.champion@gmail.com>",
   "type": "module",
   "engines": {
     "node": ">=20"

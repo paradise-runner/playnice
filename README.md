@@ -12,7 +12,7 @@ playnice snap                   # look — no action
 
 Every action returns the **settled screen**, so there is no sleeping and no re-screenshotting to find out what happened.
 
-**0.1.0** · Node 20+ · macOS + Linux · MIT
+**0.1.1** · Node 20+ · macOS + Linux · MIT
 
 ![A terminal capture: a cyan box titled "playnice demo" listing Files, Search, Settings, Quit, with Settings highlighted by reverse video and a dim status line reading "selected Settings"](docs/images/menu.png)
 
